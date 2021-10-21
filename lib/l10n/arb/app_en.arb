@@ -1,0 +1,39 @@
+{
+    "@@locale": "en",
+    "homeTitle": "Home",
+    "@homeTitle": {
+        "description": "Text shown in the AppBar of the Counter Page"
+    },
+    "videoStreamViewTitleOld": "📺 Video Stream (Before)",
+    "@videoStreamViewTitleOld": {
+        "description": "📺 Video Stream (Before)"
+    },
+    "videoStreamViewTitleNew": "📺 Video Stream (After)",
+    "@videoStreamViewTitleNew": {
+        "description": "📺 Video Stream (After)"
+    },
+    "filesViewTitleOld": "🗄 Files (Before)",
+    "@filesViewTitleOld": {
+        "description": "🗄 Files (Before)"
+    },
+    "filesViewTitleNew": "🗄 Files (After)",
+    "@filesViewTitleNew": {
+        "description": "🗄 Files (After)"
+    },
+    "registrationViewTitleOld": "🙍‍♀️ Registration (Before)",
+    "@registrationViewTitleOld": {
+        "description": "🙍‍♀️ Registration (Before)"
+    },
+    "registrationViewTitleNew": "🙍‍♀️ Registration (After)",
+    "@registrationViewTitleNew": {
+        "description": "🙍‍♀️ Registration (After)"
+    },
+    "registrationViewError": "🚫 Registration failed!",
+    "@registrationViewError": {
+        "description": "🚫 Registration failed!"
+    },
+    "registrationViewSuccess": "✅ Registration succeeded.",
+    "@registrationViewSuccess": {
+        "description": "✅ Registration succeeded."
+    }
+}

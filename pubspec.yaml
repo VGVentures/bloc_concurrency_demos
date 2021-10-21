@@ -1,0 +1,35 @@
+name: bloc_concurrency_demos
+description: A Very Good Project created by Very Good CLI.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.14.0 <3.0.0"
+
+dependencies:
+  bloc: ^7.2.0
+  bloc_concurrency: ^0.1.0
+  equatable: ^2.0.3
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^7.3.0
+  flutter_localizations:
+    sdk: flutter
+  formz: ^0.4.1
+  intl: ^0.17.0
+  rxdart: ^0.27.2
+
+dev_dependencies:
+  bloc_test: ^8.3.0
+  flutter_test:
+    sdk: flutter
+  mockingjay: ^0.1.1
+  mocktail: ^0.1.0
+  very_good_analysis: ^2.3.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+scripts:
+  test: flutter test --coverage --test-randomize-ordering-seed random
