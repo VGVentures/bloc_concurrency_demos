@@ -16,7 +16,7 @@ class RegistrationBlocOld extends Bloc<RegistrationEvent, RegistrationState>
 
   @override
   Stream<RegistrationState> mapEventToState(RegistrationEvent event) async* {
-    if (event is UsernameChanged) {
+    if (event is RegistrationUsernameChanged) {
       var username = UsernameInput.dirty(value: event.username);
       yield RegistrationState(
         username: username,
@@ -38,7 +38,7 @@ class RegistrationBlocOld extends Bloc<RegistrationEvent, RegistrationState>
           status: state.status,
         );
       }
-    } else if (event is Register) {
+    } else if (event is RegistrationSubmitted) {
       final username = state.username.value;
       try {
         yield RegistrationState(
@@ -91,12 +91,13 @@ class RegistrationBlocOld extends Bloc<RegistrationEvent, RegistrationState>
     // If this is difficult to understand, you're not alone. The new API
     // makes this considerabily simpler.
     final deferredEvents = events
-        .where((e) => e is UsernameChanged)
+        .where((e) => e is RegistrationUsernameChanged)
         .debounceTime(RegistrationBloc.debounceUsernameDuration)
         .distinct()
         .switchMap(transitionFn);
-    final forwardedEvents =
-        events.where((e) => e is! UsernameChanged).asyncExpand(transitionFn);
+    final forwardedEvents = events
+        .where((e) => e is! RegistrationUsernameChanged)
+        .asyncExpand(transitionFn);
     return forwardedEvents.mergeWith([deferredEvents]);
   }
 }

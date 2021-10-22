@@ -1,8 +1,12 @@
-abstract class RegistrationEvent {}
+abstract class RegistrationEvent {
+  const RegistrationEvent();
+}
 
-class UsernameChanged extends RegistrationEvent {
-  UsernameChanged({required this.username});
+class RegistrationUsernameChanged extends RegistrationEvent {
+  const RegistrationUsernameChanged({required this.username});
   final String username;
 }
 
-class Register extends RegistrationEvent {}
+class RegistrationSubmitted extends RegistrationEvent {
+  const RegistrationSubmitted();
+}

@@ -15,7 +15,7 @@ class Registration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RegistrationBloc(
+      create: (_) => RegistrationBloc(
         isOld: isOld,
         registrationRepo: RegistrationRepo(),
       ),
@@ -25,14 +25,9 @@ class Registration extends StatelessWidget {
 }
 
 class RegistrationView extends StatelessWidget {
-  RegistrationView({
-    Key? key,
-    required this.isOld,
-  }) : super(key: key);
+  const RegistrationView({Key? key, required this.isOld}) : super(key: key);
 
-  final GlobalKey<FormState> _registrationFormKey = GlobalKey<FormState>();
   final bool isOld;
-  final TextEditingController _usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -50,30 +45,30 @@ class RegistrationView extends StatelessWidget {
         listener: (context, state) {
           final colorScheme = Theme.of(context).colorScheme;
           if (state.status == RegistrationStatus.failed) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.registrationViewError),
-                backgroundColor: colorScheme.error,
-              ),
-            );
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(l10n.registrationViewError),
+                  backgroundColor: colorScheme.error,
+                ),
+              );
           } else if (state.status == RegistrationStatus.succeeded) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.registrationViewSuccess),
-                backgroundColor: colorScheme.secondary,
-              ),
-            );
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(l10n.registrationViewSuccess),
+                  backgroundColor: colorScheme.secondary,
+                ),
+              );
           }
         },
         child: Form(
-          key: _registrationFormKey,
           child: Padding(
             padding: const EdgeInsets.only(left: 32, right: 32, top: 32),
             child: Column(
-              children: [
-                UsernameField(controller: _usernameController),
-                const SubmitButton(),
-              ],
+              children: const [UsernameField(), SubmitButton()],
             ),
           ),
         ),
@@ -83,9 +78,7 @@ class RegistrationView extends StatelessWidget {
 }
 
 class SubmitButton extends StatelessWidget {
-  const SubmitButton({
-    Key? key,
-  }) : super(key: key);
+  const SubmitButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -95,9 +88,11 @@ class SubmitButton extends StatelessWidget {
             ? const CircularProgressIndicator()
             : ElevatedButton(
                 onPressed: state.canSubmit
-                    ? () => BlocProvider.of<RegistrationBloc>(context).add(
-                          Register(),
-                        )
+                    ? () {
+                        BlocProvider.of<RegistrationBloc>(context).add(
+                          const RegistrationSubmitted(),
+                        );
+                      }
                     : null,
                 child: const Text('Register'),
               );
@@ -107,15 +102,9 @@ class SubmitButton extends StatelessWidget {
 }
 
 class UsernameField extends StatelessWidget {
-  const UsernameField({
-    Key? key,
-    required this.controller,
-  }) : super(key: key);
-
-  final TextEditingController controller;
+  const UsernameField({Key? key}) : super(key: key);
 
   String? _usernameError(BuildContext context, UsernameInput username) {
-    // final l10n = context.l10n;
     final error = username.displayError;
     if (error == null) return null;
     if (error == UsernameInputError.empty) {
@@ -134,11 +123,10 @@ class UsernameField extends StatelessWidget {
       child: BlocBuilder<RegistrationBloc, RegistrationState>(
         builder: (context, state) {
           return TextField(
-            controller: controller,
             autocorrect: false,
             onChanged: (value) {
               BlocProvider.of<RegistrationBloc>(context).add(
-                UsernameChanged(username: value),
+                RegistrationUsernameChanged(username: value),
               );
             },
             textInputAction: TextInputAction.next,
@@ -153,10 +141,8 @@ class UsernameField extends StatelessWidget {
               filled: true,
               prefixIcon: const Icon(Icons.person),
               suffix: state.isCheckingUsername
-                  ? Container(
-                      constraints: BoxConstraints.tight(
-                        const Size(15, 15),
-                      ),
+                  ? ConstrainedBox(
+                      constraints: BoxConstraints.tight(const Size(15, 15)),
                       child: const CircularProgressIndicator(strokeWidth: 3),
                     )
                   : null,

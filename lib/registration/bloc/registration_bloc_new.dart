@@ -11,7 +11,7 @@ class RegistrationBlocNew extends Bloc<RegistrationEvent, RegistrationState>
     implements RegistrationBloc {
   RegistrationBlocNew({required this.registrationRepo})
       : super(const RegistrationState.initial()) {
-    on<UsernameChanged>(
+    on<RegistrationUsernameChanged>(
       (event, emit) async {
         var username = UsernameInput.dirty(value: event.username);
         emit(
@@ -43,7 +43,7 @@ class RegistrationBlocNew extends Bloc<RegistrationEvent, RegistrationState>
         RegistrationBloc.debounceUsernameDuration,
       ),
     );
-    on<Register>(
+    on<RegistrationSubmitted>(
       (event, emit) async {
         final username = state.username.value;
         try {
