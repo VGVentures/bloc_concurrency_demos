@@ -4,26 +4,30 @@ import 'package:formz/formz.dart';
 enum RegistrationStatus { editing, submitting, failed, succeeded }
 
 class RegistrationState {
-  RegistrationState({
+  const RegistrationState({
     required this.username,
     required this.isCheckingUsername,
     required this.status,
   });
 
-  static final initial = RegistrationState(
-    username: const UsernameInput.pure(),
-    isCheckingUsername: false,
-    status: RegistrationStatus.editing,
-  );
+  const RegistrationState.initial()
+      : this(
+          username: const UsernameInput.pure(),
+          isCheckingUsername: false,
+          status: RegistrationStatus.editing,
+        );
 
   final UsernameInput username;
-
   final bool isCheckingUsername;
   final RegistrationStatus status;
 
-  late final isBusy =
-      isCheckingUsername || status == RegistrationStatus.submitting;
-  late final canSubmit =
-      Formz.validate([username]) == FormzStatus.valid && !isBusy;
-  late final showUsernameAvailable = username.valid && !isCheckingUsername;
+  bool get isBusy {
+    return isCheckingUsername || status == RegistrationStatus.submitting;
+  }
+
+  bool get canSubmit {
+    return Formz.validate([username]) == FormzStatus.valid && !isBusy;
+  }
+
+  bool get showUsernameAvailable => username.valid && !isCheckingUsername;
 }

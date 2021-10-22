@@ -16,11 +16,13 @@ void main() {
   group('App', () {
     testWidgets('renders home page', (tester) async {
       final frame = await getVideoFrameForWidgetTest(tester);
-      await tester.pumpApp(App(
-        preloadedConfig: AppPreloadedConfiguration(
-          blankFrame: frame,
+      await tester.pumpApp(
+        App(
+          preloadedConfig: AppPreloadedConfiguration(
+            blankFrame: frame,
+          ),
         ),
-      ));
+      );
       expect(find.byType(HomePage), findsOneWidget);
     });
   });

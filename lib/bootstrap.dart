@@ -32,7 +32,8 @@ class AppBlocObserver extends BlocObserver {
 }
 
 Future<void> bootstrap(
-    FutureOr<Widget> Function(AppPreloadedConfiguration) builder) async {
+  FutureOr<Widget> Function(AppPreloadedConfiguration) builder,
+) async {
   Bloc.observer = AppBlocObserver();
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);

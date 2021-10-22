@@ -10,7 +10,7 @@ import 'package:rxdart/rxdart.dart';
 class RegistrationBlocNew extends Bloc<RegistrationEvent, RegistrationState>
     implements RegistrationBloc {
   RegistrationBlocNew({required this.registrationRepo})
-      : super(RegistrationState.initial) {
+      : super(const RegistrationState.initial()) {
     on<UsernameChanged>(
       (event, emit) async {
         var username = UsernameInput.dirty(value: event.username);
@@ -39,8 +39,9 @@ class RegistrationBlocNew extends Bloc<RegistrationEvent, RegistrationState>
           );
         }
       },
-      transformer:
-          debounceRestartable(RegistrationBloc.debounceUsernameDuration),
+      transformer: debounceRestartable(
+        RegistrationBloc.debounceUsernameDuration,
+      ),
     );
     on<Register>(
       (event, emit) async {
