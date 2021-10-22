@@ -41,7 +41,7 @@ Future<void> main() async {
           videoStreamingRepo: repo,
           frame: frame,
         ),
-        act: (bloc) => bloc.add(VideoStreamPlayPauseEvent(play: true)),
+        act: (bloc) => bloc.add(const VideoStreamPlayPauseToggled()),
         wait: Duration.zero,
         expect: () => [
           isA<VideoStreamState>()
@@ -70,7 +70,8 @@ Future<void> main() async {
           videoStreamingRepo: repo,
           frame: frame,
         ),
-        act: (bloc) => bloc.add(VideoStreamPlayPauseEvent(play: false)),
+        seed: () => VideoStreamState(currentFrame: frame, isPlaying: true),
+        act: (bloc) => bloc.add(const VideoStreamPlayPauseToggled()),
         expect: () => [
           isA<VideoStreamState>()
               .having(
@@ -98,7 +99,7 @@ Future<void> main() async {
             currentFrame: otherFrame,
             isPlaying: true,
           ),
-          act: (bloc) => bloc.add(VideoStreamUpdatedEventOld(frame: frame)),
+          act: (bloc) => bloc.add(VideoStreamUpdatedOld(frame: frame)),
           expect: () => [
             isA<VideoStreamState>().having(
               (state) => state.currentFrame,
