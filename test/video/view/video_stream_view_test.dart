@@ -20,7 +20,7 @@ void main() {
     registerFallbackValue(
       VideoStreamState(currentFrame: frame, isPlaying: false),
     );
-    registerFallbackValue(VideoStreamPlayPauseEvent(play: true));
+    registerFallbackValue(const VideoStreamPlayPauseToggled());
   });
   group('VideoStream', () {
     testWidgets('instantiates', (tester) async {
@@ -52,12 +52,7 @@ void main() {
       expect(playPauseButton, findsOneWidget);
       await tester.tap(playPauseButton);
       verify(
-        () => videoBloc.add(
-          any(
-            that: isA<VideoStreamPlayPauseEvent>()
-                .having((event) => event.play, 'event.play', !isPlaying),
-          ),
-        ),
+        () => videoBloc.add(any(that: isA<VideoStreamPlayPauseToggled>())),
       );
     });
   });

@@ -11,9 +11,9 @@ class VideoStreamBlocNew extends Bloc<VideoStreamEvent, VideoStreamState>
     required this.videoStreamingRepo,
     required VideoData frame,
   }) : super(VideoStreamState.initial(frame)) {
-    on<VideoStreamPlayPauseEvent>(
+    on<VideoStreamPlayPauseToggled>(
       (event, emit) async {
-        if (event.play) {
+        if (!state.isPlaying) {
           // ------------------------------------------------------------------- //
           // BAD—THIS WILL NOT GET CANCELED PROPERLY IF THE EVENT IS RESTARTED
           // ------------------------------------------------------------------- //
@@ -27,9 +27,9 @@ class VideoStreamBlocNew extends Bloc<VideoStreamEvent, VideoStreamState>
           // ------------------------------------------------------------------- //
           // Use this! This is like `await for`, but allows cancelation!
           // ------------------------------------------------------------------- //
-          await emit.forEach(
+          await emit.forEach<VideoData>(
             videoStreamingRepo.videoDataStream,
-            onData: (VideoData videoStreamData) => VideoStreamState(
+            onData: (videoStreamData) => VideoStreamState(
               currentFrame: videoStreamData,
               isPlaying: true,
             ),

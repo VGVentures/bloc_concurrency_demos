@@ -60,10 +60,11 @@ class VideoStreamView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RawMaterialButton(
-                  onPressed: () =>
-                      BlocProvider.of<VideoStreamBloc>(context).add(
-                    VideoStreamPlayPauseEvent(play: !state.isPlaying),
-                  ),
+                  onPressed: () {
+                    BlocProvider.of<VideoStreamBloc>(context).add(
+                      const VideoStreamPlayPauseToggled(),
+                    );
+                  },
                   fillColor: Colors.red,
                   child: state.isPlaying
                       ? const Icon(Icons.pause)

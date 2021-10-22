@@ -19,10 +19,11 @@ class VideoStreamBlocOld extends Bloc<VideoStreamEvent, VideoStreamState>
 
   @override
   Stream<VideoStreamState> mapEventToState(VideoStreamEvent event) async* {
-    if (event is VideoStreamPlayPauseEvent) {
-      if (event.play) {
-        _subscription ??=
-            videoStreamingRepo.videoDataStream.listen(_onVideoData);
+    if (event is VideoStreamPlayPauseToggled) {
+      if (!state.isPlaying) {
+        _subscription ??= videoStreamingRepo.videoDataStream.listen((data) {
+          add(VideoStreamUpdatedOld(frame: data));
+        });
       } else {
         await _subscription?.cancel();
         _subscription = null;
@@ -31,7 +32,7 @@ class VideoStreamBlocOld extends Bloc<VideoStreamEvent, VideoStreamState>
           isPlaying: false,
         );
       }
-    } else if (event is VideoStreamUpdatedEventOld) {
+    } else if (event is VideoStreamUpdatedOld) {
       yield VideoStreamState(currentFrame: event.frame, isPlaying: true);
     }
   }
@@ -40,9 +41,5 @@ class VideoStreamBlocOld extends Bloc<VideoStreamEvent, VideoStreamState>
   Future<void> close() async {
     await _subscription?.cancel();
     await super.close();
-  }
-
-  void _onVideoData(VideoData data) {
-    add(VideoStreamUpdatedEventOld(frame: data));
   }
 }
