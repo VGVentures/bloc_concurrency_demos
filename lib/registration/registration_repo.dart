@@ -11,9 +11,7 @@ class RegistrationRepo {
     }
   }
 
-  Future<void> register({
-    required String username,
-  }) async {
+  Future<void> register({required String username}) async {
     await Future<void>.delayed(const Duration(seconds: 2));
     _checkUsername(username);
     takenUsernames.add(username);
