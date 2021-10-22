@@ -9,7 +9,7 @@ import 'package:rxdart/rxdart.dart';
 class RegistrationBlocOld extends Bloc<RegistrationEvent, RegistrationState>
     implements RegistrationBloc {
   RegistrationBlocOld({required this.registrationRepo})
-      : super(RegistrationState.initial);
+      : super(const RegistrationState.initial());
 
   @override
   final RegistrationRepo registrationRepo;
@@ -80,7 +80,8 @@ class RegistrationBlocOld extends Bloc<RegistrationEvent, RegistrationState>
   Stream<Transition<RegistrationEvent, RegistrationState>> transformEvents(
     Stream<RegistrationEvent> events,
     Stream<Transition<RegistrationEvent, RegistrationState>> Function(
-            RegistrationEvent)
+      RegistrationEvent,
+    )
         transitionFn,
   ) {
     // Make the UsernameChanged event debounced AND restartable, leaving

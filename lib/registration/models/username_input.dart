@@ -20,17 +20,11 @@ class UsernameInput extends FormzInput<String, UsernameInputError> {
   @override
   UsernameInputError? validator(String value) {
     final error = serverError;
-    if (error != null) {
-      return error;
-    } else if (value.isEmpty) {
-      return UsernameInputError.empty;
-    } else if (value.length < 4) {
-      return UsernameInputError.invalid;
-    }
+    if (error != null) return error;
+    if (value.isEmpty) return UsernameInputError.empty;
+    if (value.length < 4) return UsernameInputError.invalid;
   }
 
   @override
-  String toString() {
-    return '($value, $error)';
-  }
+  String toString() => '($value, $error)';
 }
