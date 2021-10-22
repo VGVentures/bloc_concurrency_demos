@@ -5,7 +5,7 @@ abstract class VideoStreamEvent {
 }
 
 class VideoStreamPlayPauseToggled extends VideoStreamEvent {
-  const VideoStreamPlayPauseToggled();  
+  const VideoStreamPlayPauseToggled();
 }
 
 class VideoStreamUpdatedOld extends VideoStreamEvent {
