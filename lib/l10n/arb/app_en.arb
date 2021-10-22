@@ -28,6 +28,14 @@
     "@registrationViewTitleNew": {
         "description": "🙍‍♀️ Registration (After)"
     },
+    "registrationUsername": "Username",
+    "@registrationUsername": {
+        "description": "Username"
+    },
+    "registrationRegister": "Register",
+    "@registrationRegister": {
+        "description": "Register"
+    },
     "registrationViewError": "🚫 Registration failed!",
     "@registrationViewError": {
         "description": "🚫 Registration failed!"
@@ -35,5 +43,33 @@
     "registrationViewSuccess": "✅ Registration succeeded.",
     "@registrationViewSuccess": {
         "description": "✅ Registration succeeded."
+    },
+    "registrationUsernameInvalid": "Invalid username.",
+    "@registrationUsernameInvalid": {
+        "description": "Invalid username error."
+    },
+    "registrationUsernameEmpty": "Please provide a username.",
+    "@registrationUsernameEmpty": {
+        "description": "Empty username error."
+    },
+    "registrationUsernameTaken": "\"{username}\" is already taken. 😥",
+    "@registrationUsernameTaken": {
+        "description": "Username is already taken error",
+        "placeholders": {
+            "username": {
+                "type": "String",
+                "example": "unicorn"
+            }
+        }
+    },
+    "registrationUsernameAvailable": "\"{username}\" is available!",
+    "@registrationUsernameAvailable": {
+        "description": "Username is available message",
+        "placeholders": {
+            "username": {
+                "type": "String",
+                "example": "unicorn"
+            }
+        }
     }
 }

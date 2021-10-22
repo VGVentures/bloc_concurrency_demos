@@ -84,6 +84,7 @@ class SubmitButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RegistrationBloc, RegistrationState>(
       builder: (context, state) {
+        final l10n = context.l10n;
         return state.status == RegistrationStatus.submitting
             ? const CircularProgressIndicator()
             : ElevatedButton(
@@ -94,7 +95,7 @@ class SubmitButton extends StatelessWidget {
                         );
                       }
                     : null,
-                child: const Text('Register'),
+                child: Text(l10n.registrationRegister),
               );
       },
     );
@@ -105,19 +106,21 @@ class UsernameField extends StatelessWidget {
   const UsernameField({Key? key}) : super(key: key);
 
   String? _usernameError(BuildContext context, UsernameInput username) {
+    final l10n = context.l10n;
     final error = username.displayError;
     if (error == null) return null;
     if (error == UsernameInputError.empty) {
-      return 'Username cannot be empty';
+      return l10n.registrationUsernameEmpty;
     } else if (error == UsernameInputError.invalid) {
-      return 'Username should be valid';
+      return l10n.registrationUsernameInvalid;
     } else if (error == UsernameInputError.taken) {
-      return '"${username.value}" is already taken. 😢';
+      return l10n.registrationUsernameTaken(username.value);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return ConstrainedBox(
       constraints: BoxConstraints.tight(const Size.fromHeight(120)),
       child: BlocBuilder<RegistrationBloc, RegistrationState>(
@@ -134,9 +137,9 @@ class UsernameField extends StatelessWidget {
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.all(16),
               errorText: _usernameError(context, state.username),
-              labelText: 'Username',
+              labelText: l10n.registrationUsername,
               helperText: state.showUsernameAvailable
-                  ? '"${state.username.value}" is available!'
+                  ? l10n.registrationUsernameAvailable(state.username.value)
                   : null,
               filled: true,
               prefixIcon: const Icon(Icons.person),
