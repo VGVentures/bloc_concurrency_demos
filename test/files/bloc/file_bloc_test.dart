@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc_concurrency_demos/files/bloc/file_bloc_new.dart';
 import 'package:bloc_concurrency_demos/files/bloc/file_cubit.dart';
 import 'package:bloc_concurrency_demos/files/bloc/file_cubit_old.dart';
@@ -10,9 +8,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockFileRepo extends Mock implements FileRepo {}
-
-class MockCompleter extends Mock implements Completer<void> {}
+import '../file_mocks.dart';
 
 void main() {
   group('FileCubit', () {
