@@ -3,15 +3,6 @@ import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('File', () {
-    test('equality', () {
-      const otherId = 1;
-      const fileA = File(id: 1, name: 'file1.txt');
-      const fileB = File(id: 2, name: 'file2.txt');
-      expect(fileA == fileB, false);
-      expect(fileA == const File(id: otherId, name: 'file1.txt'), true);
-    });
-  });
   group('FileRepo', () {
     group('loadFiles', () {
       test('simple load succeeds', () {
@@ -35,7 +26,7 @@ void main() {
         fakeAsync((async) async {
           const id = 1;
           final initialFiles = {
-            id: const File(id: id, name: 'file1.txt'),
+            id: File(id: id, name: 'file1.txt'),
           };
           final fileRepo = FileRepo(
             defaultFileProvider: () => initialFiles,
@@ -63,7 +54,7 @@ void main() {
       test('fails on bad id', () {
         fakeAsync((async) {
           final initialFiles = {
-            1: const File(id: 1, name: 'file1.txt'),
+            1: File(id: 1, name: 'file1.txt'),
           };
           final fileRepo = FileRepo(
             defaultFileProvider: () => initialFiles,

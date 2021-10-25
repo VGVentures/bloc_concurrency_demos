@@ -9,6 +9,7 @@ class File extends Equatable {
 
   final FileId id;
   final String name;
+  final DateTime lastModified;
 
   @override
   List<Object?> get props => [name];
@@ -16,10 +17,10 @@ class File extends Equatable {
 
 class FileRepo {
   FileRepo({DefaultFileProvider? defaultFileProvider})
-      : _defaultFileProvider = defaultFileProvider ?? (() => {...initialFiles});
+      : _defaultFileProvider = defaultFileProvider ?? (() => initialFiles);
 
   @visibleForTesting
-  static const Map<FileId, File> initialFiles = {
+  static final Map<FileId, File> initialFiles = {
     1: File(id: 1, name: 'file1.txt'),
     2: File(id: 2, name: 'file2.txt'),
     3: File(id: 3, name: 'file3.txt'),
