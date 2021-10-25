@@ -14,6 +14,13 @@ class FileState extends Equatable {
     required this.pendingDeletions,
   });
 
+  FileState.initial()
+      : this(
+          fileView: const {},
+          pendingDeletions: const {},
+          isLoading: false,
+        );
+
   final Map<FileId, File> fileView;
   late final List<File> files = fileView.values.toList();
   final Set<FileId> pendingDeletions;

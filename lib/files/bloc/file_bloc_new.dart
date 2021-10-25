@@ -9,14 +9,7 @@ import 'package:bloc_concurrency_demos/files/file_repo.dart';
 class FileBlocNew extends Bloc<FileEvent, FileState>
     with FileCubitCommon
     implements FileCubit {
-  FileBlocNew({required this.fileRepo})
-      : super(
-          FileState(
-            fileView: const {},
-            pendingDeletions: const {},
-            isLoading: false,
-          ),
-        ) {
+  FileBlocNew({required this.fileRepo}) : super(FileState.initial()) {
     on<LoadFiles>(
       (event, emit) => loadFiles(event, emit.call),
       // If a LoadFiles event is added while a previous LoadFiles event
