@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_concurrency_demos/files/bloc/file_bloc_new.dart';
 import 'package:bloc_concurrency_demos/files/bloc/file_cubit.dart';
 import 'package:bloc_concurrency_demos/files/bloc/file_cubit_old.dart';
@@ -8,7 +10,9 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../file_mocks.dart';
+class MockFileRepo extends Mock implements FileRepo {}
+
+class MockCompleter extends Mock implements Completer<void> {}
 
 void main() {
   group('FileCubit', () {
@@ -29,10 +33,12 @@ void main() {
 
     group('File$old', () {
       late FileRepo repo;
+      late MockCompleter completer;
       final error = Exception();
 
       setUp(() {
         repo = MockFileRepo();
+        completer = MockCompleter();
       });
 
       group('loadFiles', () {
@@ -44,7 +50,7 @@ void main() {
             );
           },
           build: () => FileCubit(isOld: isOld, fileRepo: repo),
-          act: (cubit) => cubit.add(const LoadFiles()),
+          act: (cubit) => cubit.add(LoadFiles(completer: completer)),
           expect: () => <FileState>[
             FileState(
               fileView: const {},
@@ -57,6 +63,9 @@ void main() {
               isLoading: false,
             ),
           ],
+          verify: (cubit) {
+            verify(() => completer.complete()).called(1);
+          },
         );
         blocTest<FileCubit, FileState>(
           'emits failure state',
@@ -64,7 +73,7 @@ void main() {
             when(() => repo.loadFiles()).thenThrow(error);
           },
           build: () => FileCubit(isOld: isOld, fileRepo: repo),
-          act: (cubit) => cubit.add(const LoadFiles()),
+          act: (cubit) => cubit.add(LoadFiles(completer: completer)),
           expect: () => <FileState>[
             FileState(
               fileView: const {},
@@ -78,6 +87,9 @@ void main() {
               isLoading: false,
             ),
           ],
+          verify: (cubit) {
+            verify(() => completer.complete()).called(1);
+          },
         );
       });
 
@@ -97,7 +109,7 @@ void main() {
             isLoading: false,
             pendingDeletions: const {},
           ),
-          act: (cubit) => cubit.add(const DeleteFile(fileId: 1)),
+          act: (cubit) => cubit.add(DeleteFile(fileId: 1)),
           expect: () => <FileState>[
             FileState(
               fileView: files,
@@ -123,7 +135,7 @@ void main() {
             isLoading: false,
             pendingDeletions: const {},
           ),
-          act: (cubit) => cubit.add(const DeleteFile(fileId: 1)),
+          act: (cubit) => cubit.add(DeleteFile(fileId: 1)),
           expect: () => <FileState>[
             FileState(
               fileView: files,
@@ -147,7 +159,7 @@ void main() {
             isLoading: false,
             pendingDeletions: const {1},
           ),
-          act: (cubit) => cubit.add(const DeleteFile(fileId: 1)),
+          act: (cubit) => cubit.add(DeleteFile(fileId: 1)),
           expect: () => <FileState>[],
         );
       });
