@@ -5,12 +5,10 @@ typedef FileId = int;
 typedef DefaultFileProvider = Map<FileId, File> Function();
 
 class File extends Equatable {
-  File({required this.id, required this.name, DateTime? lastModified})
-      : lastModified = lastModified ?? DateTime.now();
+  const File({required this.id, required this.name});
 
   final FileId id;
   final String name;
-  final DateTime lastModified;
 
   @override
   List<Object?> get props => [name];
@@ -21,7 +19,7 @@ class FileRepo {
       : _defaultFileProvider = defaultFileProvider ?? (() => initialFiles);
 
   @visibleForTesting
-  static final Map<FileId, File> initialFiles = {
+  static const Map<FileId, File> initialFiles = {
     1: File(id: 1, name: 'file1.txt'),
     2: File(id: 2, name: 'file2.txt'),
     3: File(id: 3, name: 'file3.txt'),
