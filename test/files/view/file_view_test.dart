@@ -30,8 +30,15 @@ void main() {
 
   group('FilesView', () {
     testWidgets('pulls-to-refresh', (tester) async {
-      final fileCubit = MockFileCubit();
-      when(() => fileCubit.state).thenReturn(FileState.initial());
+      final repo = MockFileRepo();
+      when(repo.loadFiles).thenAnswer(
+        (_) async => const {
+          1: File(id: 1, name: 'file1.txt'),
+        },
+      );
+
+      final fileCubit = FileCubit(isOld: false, fileRepo: repo)
+        ..add(LoadFiles());
 
       await tester.pumpApp(
         BlocProvider<FileCubit>.value(
@@ -39,11 +46,17 @@ void main() {
           child: const FilesView(isOld: false),
         ),
       );
-      final refreshIndicator = find.byType(RefreshIndicator);
-      expect(refreshIndicator, findsOneWidget);
-      await tester.drag(refreshIndicator, const Offset(0, 500));
-      await tester.pumpAndSettle(FileRepo.loadFilesDuration);
-      verify(() => fileCubit.add(any(that: isA<LoadFiles>()))).called(1);
+      await tester.pumpAndSettle();
+
+      verify(repo.loadFiles).called(1);
+
+      final widgetToFling = find.byType(ListTile);
+      expect(widgetToFling, findsOneWidget);
+      await tester.fling(widgetToFling, const Offset(0, 500), 1000);
+
+      await tester.pumpAndSettle();
+
+      verify(repo.loadFiles).called(1);
     });
   });
 }
