@@ -43,8 +43,8 @@ void main() {
         VideoStreamState(currentFrame: frame, isPlaying: isPlaying),
       );
 
-      final widget = BlocProvider<VideoStreamBloc>(
-        create: (_) => videoBloc,
+      final widget = BlocProvider<VideoStreamBloc>.value(
+        value: videoBloc,
         child: const VideoStreamView(isOld: false),
       );
       await tester.pumpApp(widget);
