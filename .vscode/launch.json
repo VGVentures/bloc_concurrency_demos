@@ -28,6 +28,12 @@
       ]
     },
     {
+      "name": "Debug Current Test",
+      "request": "launch",
+      "type": "dart",
+      "program": "${relativeFile}",
+    },
+    {
       "name": "Launch staging",
       "request": "launch",
       "type": "dart",
