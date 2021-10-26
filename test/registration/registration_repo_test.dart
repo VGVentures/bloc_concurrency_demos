@@ -4,14 +4,15 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('isUsernameAvailable', () {
-    final repo = RegistrationRepo();
     test('indicates available username', () async {
+      final repo = RegistrationRepo();
       fakeAsync((async) {
         expect(repo.isUsernameAvailable('unicorn'), completion(equals(true)));
         async.elapse(RegistrationRepo.isUsernameAvailableDuration);
       });
     });
     test('indicates unavailable username', () {
+      final repo = RegistrationRepo();
       fakeAsync((async) {
         expect(repo.isUsernameAvailable('username'), completion(equals(false)));
         async.elapse(RegistrationRepo.isUsernameAvailableDuration);
@@ -21,15 +22,10 @@ void main() {
 
   group('register', () {
     final repo = RegistrationRepo();
-    test('registers user', () async {
+    test('succeeds with available username, rejects taken username', () async {
       fakeAsync((async) {
         expect(repo.register(username: 'unicorn'), completes);
         async.elapse(RegistrationRepo.registrationDuration);
-      });
-    });
-
-    test('does not allow duplicate username to register', () {
-      fakeAsync((async) {
         expect(
           repo.register(username: 'unicorn'),
           throwsA(isA<ArgumentError>()),

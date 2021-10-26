@@ -138,7 +138,7 @@ class UsernameField extends StatelessWidget {
               contentPadding: const EdgeInsets.all(16),
               errorText: _usernameError(context, state.username),
               labelText: l10n.registrationUsername,
-              helperText: state.showUsernameAvailable
+              helperText: state.canSubmit
                   ? l10n.registrationUsernameAvailable(state.username.value)
                   : null,
               filled: true,

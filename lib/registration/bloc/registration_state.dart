@@ -11,7 +11,12 @@ class RegistrationState {
   });
 
   const RegistrationState.initial()
-      : this(
+      :
+        // A bug in dart prevents const constructors from being covered in
+        // code coverage.
+        //
+        // coverage:ignore-line
+        this(
           username: const UsernameInput.pure(),
           isCheckingUsername: false,
           status: RegistrationStatus.editing,
@@ -28,6 +33,4 @@ class RegistrationState {
   bool get canSubmit {
     return Formz.validate([username]) == FormzStatus.valid && !isBusy;
   }
-
-  bool get showUsernameAvailable => username.valid && !isCheckingUsername;
 }
