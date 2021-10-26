@@ -16,7 +16,7 @@ class File extends Equatable {
 
 class FileRepo {
   FileRepo({DefaultFileProvider? defaultFileProvider})
-      : _defaultFileProvider = defaultFileProvider ?? (() => initialFiles);
+      : _defaultFileProvider = defaultFileProvider ?? (() => {...initialFiles});
 
   @visibleForTesting
   static const Map<FileId, File> initialFiles = {
