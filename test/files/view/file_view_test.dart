@@ -17,7 +17,6 @@ import '../file_mocks.dart';
 void main() {
   setUpAll(() {
     registerFallbackValue(FileState.initial());
-    registerFallbackValue<Completer<void>>(MockCompleter());
     registerFallbackValue<FileEvent>(const LoadFiles());
   });
   group('Files', () {

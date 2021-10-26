@@ -29,12 +29,10 @@ void main() {
 
     group('File$old', () {
       late FileRepo repo;
-      late MockCompleter completer;
       final error = Exception();
 
       setUp(() {
         repo = MockFileRepo();
-        completer = MockCompleter();
       });
 
       group('loadFiles', () {
@@ -59,9 +57,6 @@ void main() {
               isLoading: false,
             ),
           ],
-          verify: (cubit) {
-            verify(() => completer.complete()).called(1);
-          },
         );
         blocTest<FileCubit, FileState>(
           'emits failure state',
