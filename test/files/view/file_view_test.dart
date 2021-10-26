@@ -65,7 +65,7 @@ void main() {
       expect(widgetToFling, findsOneWidget);
       await tester.fling(widgetToFling, const Offset(0, 500), 1000);
 
-      await tester.pumpAndSettle(FileRepo.loadFilesDuration);
+      await tester.pumpAndSettle();
 
       verify(() => fileCubit.add(any(that: isA<LoadFiles>()))).called(1);
     });
