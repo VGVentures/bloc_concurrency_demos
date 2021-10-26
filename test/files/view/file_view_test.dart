@@ -14,43 +14,69 @@ import 'package:mocktail/mocktail.dart';
 import '../../helpers/helpers.dart';
 import '../file_mocks.dart';
 
+extension on WidgetTester {
+  Future<void> pumpFileView(FileCubit bloc) async {
+    await pumpApp(
+      BlocProvider<FileCubit>.value(
+        value: bloc,
+        child: const FilesView(isOld: true),
+      ),
+    );
+  }
+}
+
+class FileListTileFinder extends MatchFinder {
+  FileListTileFinder(this.file);
+
+  @override
+  String get description => 'Finds a list tile for a given File instance.';
+
+  final File file;
+
+  @override
+  bool matches(Element candidate) {
+    return candidate.widget is ListTile &&
+        candidate.widget.key == ValueKey(file.id);
+  }
+}
+
+extension on CommonFinders {
+  FileListTileFinder fileListTile(File file) => FileListTileFinder(file);
+}
+
 void main() {
   setUpAll(() {
     registerFallbackValue(FileState.initial());
     registerFallbackValue<FileEvent>(const LoadFiles());
   });
 
-  // group('Files', () {
-  //   testWidgets('instantiates', (tester) async {
-  //     const files = Files(isOld: false);
-  //     await tester.pumpApp(files);
-  //     await tester.pumpAndSettle();
-  //     expect(find.byType(FilesView), findsOneWidget);
-  //   });
-  // });
+  final file = FileRepo.initialFiles.values.first;
+
+  group('Files', () {
+    testWidgets('instantiates', (tester) async {
+      const files = Files(isOld: false);
+      await tester.pumpApp(files);
+      await tester.pumpAndSettle();
+      expect(find.byType(FilesView), findsOneWidget);
+    });
+  });
 
   group('FilesView', () {
-    testWidgets('pulls-to-refresh', (tester) async {
-      final fileCubit = MockFileCubit();
+    testWidgets('reloads files on pull-to-refresh', (tester) async {
+      final fileBloc = MockFileBloc();
       final controller = StreamController<FileState>();
-      final initialState = FileState(
-        fileView: FileRepo.initialFiles,
-        isLoading: false,
-        pendingDeletions: const {},
-      );
 
       whenListen(
-        fileCubit,
+        fileBloc,
         controller.stream,
-        initialState: initialState,
-      );
-
-      await tester.pumpApp(
-        BlocProvider<FileCubit>.value(
-          value: fileCubit,
-          child: const FilesView(isOld: true),
+        initialState: FileState(
+          fileView: FileRepo.initialFiles,
+          isLoading: false,
+          pendingDeletions: const {},
         ),
       );
+
+      await tester.pumpFileView(fileBloc);
 
       await tester.pumpAndSettle();
 
@@ -68,7 +94,7 @@ void main() {
       // Finish the indicator hide animation
       await tester.pump(const Duration(seconds: 1));
 
-      await untilCalled(() => fileCubit.add(any(that: isA<LoadFiles>())));
+      await untilCalled(() => fileBloc.add(any(that: isA<LoadFiles>())));
 
       controller
         ..add(
@@ -88,8 +114,78 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      verify(() => fileCubit.add(any(that: isA<LoadFiles>()))).called(1);
+      verify(() => fileBloc.add(any(that: isA<LoadFiles>()))).called(1);
       await controller.close();
+    });
+
+    testWidgets('deletes file', (tester) async {
+      final fileBloc = MockFileBloc();
+
+      when(() => fileBloc.state).thenReturn(
+        FileState(
+          fileView: FileRepo.initialFiles,
+          isLoading: false,
+          pendingDeletions: const {},
+        ),
+      );
+
+      await tester.pumpFileView(fileBloc);
+
+      await tester.pumpAndSettle();
+
+      final fileTile = find.fileListTile(file);
+      expect(fileTile, findsOneWidget);
+
+      final deleteAction = find.descendant(
+        of: fileTile,
+        matching: find.byType(DeleteAction),
+      );
+      expect(deleteAction, findsOneWidget);
+
+      await tester.tap(deleteAction);
+      when(() => fileBloc.state).thenReturn(
+        FileState(
+          fileView: FileRepo.initialFiles,
+          isLoading: false,
+          pendingDeletions: {file.id},
+        ),
+      );
+      await tester.pump();
+
+      verify(() => fileBloc.add(any(that: isA<DeleteFile>()))).called(1);
+    });
+  });
+
+  group('DeleteAction', () {
+    testWidgets('shows progress indicator when deleting', (tester) async {
+      final fileBloc = MockFileBloc();
+
+      when(() => fileBloc.state).thenReturn(
+        FileState(
+          fileView: FileRepo.initialFiles,
+          isLoading: false,
+          pendingDeletions: {file.id},
+        ),
+      );
+
+      await tester.pumpFileView(fileBloc);
+
+      final fileTile = find.ancestor(
+        of: find.text(file.name),
+        matching: find.byType(ListTile),
+      );
+      expect(fileTile, findsOneWidget);
+
+      final deleteAction = find.fileListTile(file);
+      expect(deleteAction, findsOneWidget);
+
+      expect(
+        find.descendant(
+          of: deleteAction,
+          matching: find.byType(CircularProgressIndicator),
+        ),
+        findsOneWidget,
+      );
     });
   });
 }
