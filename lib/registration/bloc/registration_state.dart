@@ -10,17 +10,17 @@ class RegistrationState {
     required this.status,
   });
 
+  // A bug in dart prevents const constructors from receiving
+  // proper coverage.
+
+  // coverage:ignore-start
   const RegistrationState.initial()
-      :
-        // A bug in dart prevents const constructors from being covered in
-        // code coverage.
-        //
-        // coverage:ignore-line
-        this(
+      : this(
           username: const UsernameInput.pure(),
           isCheckingUsername: false,
           status: RegistrationStatus.editing,
         );
+  // coverage:ignore-end
 
   final UsernameInput username;
   final bool isCheckingUsername;

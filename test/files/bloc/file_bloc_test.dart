@@ -12,9 +12,9 @@ import '../file_mocks.dart';
 
 void main() {
   group('FileCubit', () {
-    test('creates old cubit', () {
-      final cubit = FileCubit(isOld: true, fileRepo: MockFileRepo());
-      expect(cubit, isA<FileCubitOld>());
+    test('creates old bloc', () {
+      final bloc = FileCubit(isOld: true, fileRepo: MockFileRepo());
+      expect(bloc, isA<FileCubitOld>());
     });
 
     test('creates new bloc', () {
@@ -35,7 +35,7 @@ void main() {
         repo = MockFileRepo();
       });
 
-      group('loadFiles', () {
+      group('LoadFiles', () {
         blocTest<FileCubit, FileState>(
           'succeeds',
           setUp: () {
@@ -44,7 +44,7 @@ void main() {
             );
           },
           build: () => FileCubit(isOld: isOld, fileRepo: repo),
-          act: (cubit) => cubit.add(const LoadFiles()),
+          act: (bloc) => bloc.add(const LoadFiles()),
           expect: () => <FileState>[
             FileState(
               fileView: const {},
@@ -64,7 +64,7 @@ void main() {
             when(() => repo.loadFiles()).thenThrow(error);
           },
           build: () => FileCubit(isOld: isOld, fileRepo: repo),
-          act: (cubit) => cubit.add(const LoadFiles()),
+          act: (bloc) => bloc.add(const LoadFiles()),
           expect: () => <FileState>[
             FileState(
               fileView: const {},
@@ -81,7 +81,7 @@ void main() {
         );
       });
 
-      group('deleteFile', () {
+      group('DeleteFile', () {
         final files = {
           1: const File(id: 1, name: 'file1.txt'),
         };
@@ -97,7 +97,7 @@ void main() {
             isLoading: false,
             pendingDeletions: const {},
           ),
-          act: (cubit) => cubit.add(const DeleteFile(fileId: 1)),
+          act: (bloc) => bloc.add(const DeleteFile(fileId: 1)),
           expect: () => <FileState>[
             FileState(
               fileView: files,
@@ -123,7 +123,7 @@ void main() {
             isLoading: false,
             pendingDeletions: const {},
           ),
-          act: (cubit) => cubit.add(const DeleteFile(fileId: 1)),
+          act: (bloc) => bloc.add(const DeleteFile(fileId: 1)),
           expect: () => <FileState>[
             FileState(
               fileView: files,
@@ -147,7 +147,7 @@ void main() {
             isLoading: false,
             pendingDeletions: const {1},
           ),
-          act: (cubit) => cubit.add(const DeleteFile(fileId: 1)),
+          act: (bloc) => bloc.add(const DeleteFile(fileId: 1)),
           expect: () => <FileState>[],
         );
       });
