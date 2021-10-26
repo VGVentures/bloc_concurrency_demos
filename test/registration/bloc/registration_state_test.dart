@@ -4,6 +4,29 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('RegistrationState', () {
+    test('equality', () {
+      const username = UsernameInput.dirty(value: 'unicorn');
+      const stateA = RegistrationState(
+        username: username,
+        isCheckingUsername: true,
+        status: RegistrationStatus.editing,
+      );
+      const stateB = RegistrationState(
+        username: username,
+        isCheckingUsername: false,
+        status: RegistrationStatus.editing,
+      );
+      expect(stateA == stateB, false);
+      expect(
+        stateA ==
+            const RegistrationState(
+              username: username,
+              isCheckingUsername: true,
+              status: RegistrationStatus.editing,
+            ),
+        true,
+      );
+    });
     group('isBusy', () {
       test('returns true when checking username', () {
         const state = RegistrationState(

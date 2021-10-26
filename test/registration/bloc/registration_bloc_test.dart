@@ -3,6 +3,7 @@ import 'package:bloc_concurrency_demos/registration/bloc/registration_bloc_new.d
 import 'package:bloc_concurrency_demos/registration/bloc/registration_bloc_old.dart';
 import 'package:bloc_concurrency_demos/registration/bloc/registration_events.dart';
 import 'package:bloc_concurrency_demos/registration/bloc/registration_state.dart';
+import 'package:bloc_concurrency_demos/registration/models/username_input.dart';
 import 'package:bloc_concurrency_demos/registration/registration_repo.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -52,30 +53,17 @@ void main() {
             act: (bloc) => bloc.add(
               const RegistrationUsernameChanged(username: validUsername),
             ),
-            expect: () => [
-              isA<RegistrationState>()
-                  .having(
-                    (s) => s.username.value,
-                    'username.value',
-                    validUsername,
-                  )
-                  .having(
-                    (s) => s.isCheckingUsername,
-                    'isCheckingUsername',
-                    true,
-                  ),
-              isA<RegistrationState>()
-                  .having(
-                    (s) => s.username.value,
-                    'username.value',
-                    validUsername,
-                  )
-                  .having((s) => s.username.valid, 'username.valid', true)
-                  .having(
-                    (s) => s.isCheckingUsername,
-                    'isCheckingUsername',
-                    false,
-                  ),
+            expect: () => <RegistrationState>[
+              const RegistrationState(
+                username: UsernameInput.dirty(value: validUsername),
+                isCheckingUsername: true,
+                status: RegistrationStatus.editing,
+              ),
+              // const RegistrationState(
+              //   username: UsernameInput.dirty(value: validUsername),
+              //   isCheckingUsername: false,
+              //   status: RegistrationStatus.editing,
+              // ),
             ],
             verify: (bloc) {
               verify(() => repo.isUsernameAvailable(validUsername)).called(1);
