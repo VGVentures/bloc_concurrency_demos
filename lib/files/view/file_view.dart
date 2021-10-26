@@ -61,7 +61,7 @@ class _FilesViewState extends State<FilesView> {
         listenWhen: (previous, current) =>
             previous.isLoading && !current.isLoading,
         listener: (context, state) {
-          _reloadFiles.complete();
+          if (!_reloadFiles.isCompleted) _reloadFiles.complete();
         },
         builder: (context, state) {
           return RefreshIndicator(
