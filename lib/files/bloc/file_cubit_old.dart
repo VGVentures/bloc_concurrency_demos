@@ -8,14 +8,7 @@ import 'package:bloc_concurrency_demos/files/file_repo.dart';
 class FileCubitOld extends Cubit<FileState>
     with FileCubitCommon
     implements FileCubit {
-  FileCubitOld({required this.fileRepo})
-      : super(
-          FileState(
-            fileView: const {},
-            pendingDeletions: const {},
-            isLoading: false,
-          ),
-        );
+  FileCubitOld({required this.fileRepo}) : super(FileState.initial());
 
   @override
   final FileRepo fileRepo;

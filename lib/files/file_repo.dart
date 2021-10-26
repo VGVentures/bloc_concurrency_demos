@@ -1,23 +1,25 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 typedef FileId = int;
+typedef DefaultFileProvider = Map<FileId, File> Function();
 
 class File extends Equatable {
-  File({required this.id, required this.name, DateTime? lastModified})
-      : lastModified = lastModified ?? DateTime.now();
+  const File({required this.id, required this.name});
 
   final FileId id;
   final String name;
-  final DateTime lastModified;
-
-  File renamed({required String name}) => File(name: name, id: id);
 
   @override
   List<Object?> get props => [name];
 }
 
 class FileRepo {
-  static final _initialFiles = <FileId, File>{
+  FileRepo({DefaultFileProvider? defaultFileProvider})
+      : _defaultFileProvider = defaultFileProvider ?? (() => {...initialFiles});
+
+  @visibleForTesting
+  static const Map<FileId, File> initialFiles = {
     1: File(id: 1, name: 'file1.txt'),
     2: File(id: 2, name: 'file2.txt'),
     3: File(id: 3, name: 'file3.txt'),
@@ -25,40 +27,25 @@ class FileRepo {
     5: File(id: 5, name: 'file5.txt'),
   };
 
-  final Map<int, File> _files = {};
+  static const deleteFileDuration = Duration(seconds: 2);
+  static const loadFilesDuration = Duration(seconds: 1);
 
-  late FileId _nextId = _initialFiles.length + 1;
+  final Map<FileId, File> Function() _defaultFileProvider;
 
-  Future<void> renameFile({required FileId id, required String newName}) async {
-    await Future.delayed(const Duration(seconds: 10), () {});
-    if (!_files.containsKey(id)) {
-      throw ArgumentError('File with id=$id does not exist');
-    }
-    final file = _files[id]!;
-    _files[id] = file.renamed(name: newName);
-  }
+  late final Map<int, File> _files = _defaultFileProvider();
 
   Future<void> deleteFile({required FileId id}) async {
-    await Future.delayed(const Duration(seconds: 2), () {});
+    await Future.delayed(deleteFileDuration, () {});
     if (!_files.containsKey(id)) {
       throw ArgumentError('File with id=$id does not exist');
     }
     _files.remove(id);
   }
 
-  Future<void> createFile({required String name}) async {
-    await Future.delayed(const Duration(seconds: 10), () {});
-    if (_files.values.where((file) => file.name == name).isNotEmpty) {
-      throw ArgumentError('File with name=$name already exists');
-    }
-    final file = File(id: _nextId++, name: name);
-    _files[_nextId++] = file;
-  }
-
   Future<Map<FileId, File>> loadFiles() async {
-    await Future.delayed(const Duration(seconds: 1), () {});
+    await Future.delayed(loadFilesDuration, () {});
     if (_files.isEmpty) {
-      _files.addAll(_initialFiles);
+      _files.addAll(initialFiles);
     }
     return {..._files};
   }
