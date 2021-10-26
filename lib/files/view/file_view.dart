@@ -17,16 +17,23 @@ class Files extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          FileCubit(isOld: isOld, fileRepo: FileRepo())..add(LoadFiles()),
+          FileCubit(isOld: isOld, fileRepo: FileRepo())..add(const LoadFiles()),
       child: FilesView(isOld: isOld),
     );
   }
 }
 
-class FilesView extends StatelessWidget {
+class FilesView extends StatefulWidget {
   const FilesView({Key? key, required this.isOld}) : super(key: key);
 
   final bool isOld;
+
+  @override
+  State<FilesView> createState() => _FilesViewState();
+}
+
+class _FilesViewState extends State<FilesView> {
+  Completer<void> _reloadFiles = Completer();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +41,7 @@ class FilesView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          isOld ? l10n.filesViewTitleOld : l10n.filesViewTitleNew,
+          widget.isOld ? l10n.filesViewTitleOld : l10n.filesViewTitleNew,
         ),
         bottom: PreferredSize(
           preferredSize: const Size(double.infinity, 6),
@@ -49,15 +56,19 @@ class FilesView extends StatelessWidget {
           ),
         ),
       ),
-      body: BlocBuilder<FileCubit, FileState>(
+      body: BlocConsumer<FileCubit, FileState>(
+        // Only call bloc listener when the state has finished loading.
+        listenWhen: (previous, current) =>
+            previous.isLoading && !current.isLoading,
+        listener: (context, state) {
+          _reloadFiles.complete();
+          _reloadFiles = Completer();
+        },
         builder: (context, state) {
           return RefreshIndicator(
             onRefresh: () {
-              final completer = Completer<void>();
-              BlocProvider.of<FileCubit>(context).add(
-                LoadFiles(completer: completer),
-              );
-              return completer.future;
+              BlocProvider.of<FileCubit>(context).add(const LoadFiles());
+              return _reloadFiles.future;
             },
             child: ListView.builder(
               primary: true,

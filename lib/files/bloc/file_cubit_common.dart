@@ -24,8 +24,6 @@ mixin FileCubitCommon implements FileCubit {
     } catch (e) {
       error = e;
     } finally {
-      final completer = event.completer;
-      if (completer != null) completer.complete();
       emit(
         FileState(
           fileView: files ?? state.fileView,

@@ -1,15 +1,14 @@
-import 'dart:async';
-
 import 'package:bloc_concurrency_demos/files/file_repo.dart';
 
-abstract class FileEvent {}
+abstract class FileEvent {
+  const FileEvent();
+}
 
 class LoadFiles extends FileEvent {
-  LoadFiles({this.completer});
-  final Completer<void>? completer;
+  const LoadFiles();
 }
 
 class DeleteFile extends FileEvent {
-  DeleteFile({required this.fileId});
+  const DeleteFile({required this.fileId});
   final FileId fileId;
 }
