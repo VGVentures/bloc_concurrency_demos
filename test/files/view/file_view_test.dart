@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_concurrency_demos/files/bloc/file_cubit.dart';
 import 'package:bloc_concurrency_demos/files/bloc/file_events.dart';
 import 'package:bloc_concurrency_demos/files/bloc/file_state.dart';
@@ -30,12 +32,17 @@ void main() {
   group('FilesView', () {
     testWidgets('pulls-to-refresh', (tester) async {
       final fileCubit = MockFileCubit();
-      when(() => fileCubit.state).thenReturn(
-        FileState(
-          fileView: FileRepo.initialFiles,
-          isLoading: false,
-          pendingDeletions: const {},
-        ),
+      final controller = StreamController<FileState>();
+      final initialState = FileState(
+        fileView: FileRepo.initialFiles,
+        isLoading: false,
+        pendingDeletions: const {},
+      );
+
+      whenListen(
+        fileCubit,
+        controller.stream,
+        initialState: initialState,
       );
 
       await tester.pumpApp(
@@ -44,32 +51,45 @@ void main() {
           child: const FilesView(isOld: true),
         ),
       );
+
       await tester.pumpAndSettle();
 
       final widgetToFling = find.byType(ListTile).first;
       expect(widgetToFling, findsOneWidget);
 
-      whenListen(
-        fileCubit,
-        Stream.fromIterable([
+      await tester.fling(widgetToFling, const Offset(0, 500), 1000);
+
+      await tester.pump();
+
+      // Finish the scroll animation
+      await tester.pump(const Duration(seconds: 1));
+      // Finish the indicator settle animation
+      await tester.pump(const Duration(seconds: 1));
+      // Finish the indicator hide animation
+      await tester.pump(const Duration(seconds: 1));
+
+      await untilCalled(() => fileCubit.add(any(that: isA<LoadFiles>())));
+
+      controller
+        ..add(
           FileState(
             fileView: FileRepo.initialFiles,
             isLoading: true,
             pendingDeletions: const {},
           ),
+        )
+        ..add(
           FileState(
             fileView: FileRepo.initialFiles,
             isLoading: false,
             pendingDeletions: const {},
           ),
-        ]),
-      );
-
-      await tester.fling(widgetToFling, const Offset(0, 500), 1000);
+        );
 
       await tester.pumpAndSettle();
 
       verify(() => fileCubit.add(any(that: isA<LoadFiles>()))).called(1);
+      await controller.close();
     });
   });
 }
