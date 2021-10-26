@@ -46,7 +46,7 @@ void main() {
             );
           },
           build: () => FileCubit(isOld: isOld, fileRepo: repo),
-          act: (cubit) => cubit.add(LoadFiles(completer: completer)),
+          act: (cubit) => cubit.add(const LoadFiles()),
           expect: () => <FileState>[
             FileState(
               fileView: const {},
@@ -69,7 +69,7 @@ void main() {
             when(() => repo.loadFiles()).thenThrow(error);
           },
           build: () => FileCubit(isOld: isOld, fileRepo: repo),
-          act: (cubit) => cubit.add(LoadFiles(completer: completer)),
+          act: (cubit) => cubit.add(const LoadFiles()),
           expect: () => <FileState>[
             FileState(
               fileView: const {},
@@ -83,9 +83,6 @@ void main() {
               isLoading: false,
             ),
           ],
-          verify: (cubit) {
-            verify(() => completer.complete()).called(1);
-          },
         );
       });
 
@@ -105,7 +102,7 @@ void main() {
             isLoading: false,
             pendingDeletions: const {},
           ),
-          act: (cubit) => cubit.add(DeleteFile(fileId: 1)),
+          act: (cubit) => cubit.add(const DeleteFile(fileId: 1)),
           expect: () => <FileState>[
             FileState(
               fileView: files,
@@ -131,7 +128,7 @@ void main() {
             isLoading: false,
             pendingDeletions: const {},
           ),
-          act: (cubit) => cubit.add(DeleteFile(fileId: 1)),
+          act: (cubit) => cubit.add(const DeleteFile(fileId: 1)),
           expect: () => <FileState>[
             FileState(
               fileView: files,
@@ -155,7 +152,7 @@ void main() {
             isLoading: false,
             pendingDeletions: const {1},
           ),
-          act: (cubit) => cubit.add(DeleteFile(fileId: 1)),
+          act: (cubit) => cubit.add(const DeleteFile(fileId: 1)),
           expect: () => <FileState>[],
         );
       });

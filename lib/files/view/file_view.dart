@@ -61,12 +61,12 @@ class _FilesViewState extends State<FilesView> {
         listenWhen: (previous, current) =>
             previous.isLoading && !current.isLoading,
         listener: (context, state) {
-          if (!_reloadFiles.isCompleted) _reloadFiles.complete();
+          _reloadFiles.complete();
+          _reloadFiles = Completer();
         },
         builder: (context, state) {
           return RefreshIndicator(
             onRefresh: () {
-              _reloadFiles = Completer();
               BlocProvider.of<FileCubit>(context).add(const LoadFiles());
               return _reloadFiles.future;
             },
