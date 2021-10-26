@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc_concurrency_demos/files/bloc/file_cubit.dart';
 import 'package:bloc_concurrency_demos/files/bloc/file_events.dart';
 import 'package:bloc_concurrency_demos/files/bloc/file_state.dart';
@@ -19,33 +17,21 @@ void main() {
     registerFallbackValue(FileState.initial());
     registerFallbackValue<FileEvent>(const LoadFiles());
   });
-  group('Files', () {
-    testWidgets('instantiates', (tester) async {
-      const files = Files(isOld: false);
-      await tester.pumpApp(files);
-      await tester.pumpAndSettle();
-      expect(find.byType(FilesView), findsOneWidget);
-    });
-  });
+
+  // group('Files', () {
+  //   testWidgets('instantiates', (tester) async {
+  //     const files = Files(isOld: false);
+  //     await tester.pumpApp(files);
+  //     await tester.pumpAndSettle();
+  //     expect(find.byType(FilesView), findsOneWidget);
+  //   });
+  // });
 
   group('FilesView', () {
     testWidgets('pulls-to-refresh', (tester) async {
-      final fileCubit = MockFileBloc();
-      whenListen(
-        fileCubit,
-        Stream.fromIterable([
-          FileState(
-            fileView: FileRepo.initialFiles,
-            isLoading: true,
-            pendingDeletions: const {},
-          ),
-          FileState(
-            fileView: FileRepo.initialFiles,
-            isLoading: false,
-            pendingDeletions: const {},
-          ),
-        ]),
-        initialState: FileState(
+      final fileCubit = MockFileCubit();
+      when(() => fileCubit.state).thenReturn(
+        FileState(
           fileView: FileRepo.initialFiles,
           isLoading: false,
           pendingDeletions: const {},
@@ -62,6 +48,23 @@ void main() {
 
       final widgetToFling = find.byType(ListTile).first;
       expect(widgetToFling, findsOneWidget);
+
+      whenListen(
+        fileCubit,
+        Stream.fromIterable([
+          FileState(
+            fileView: FileRepo.initialFiles,
+            isLoading: true,
+            pendingDeletions: const {},
+          ),
+          FileState(
+            fileView: FileRepo.initialFiles,
+            isLoading: false,
+            pendingDeletions: const {},
+          ),
+        ]),
+      );
+
       await tester.fling(widgetToFling, const Offset(0, 500), 1000);
 
       await tester.pumpAndSettle();
