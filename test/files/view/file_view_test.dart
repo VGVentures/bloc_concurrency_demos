@@ -32,13 +32,6 @@ void main() {
   group('FilesView', () {
     testWidgets('pulls-to-refresh', (tester) async {
       final fileCubit = MockFileBloc();
-      when(() => fileCubit.state).thenAnswer(
-        (_) => FileState(
-          fileView: FileRepo.initialFiles,
-          isLoading: false,
-          pendingDeletions: const {},
-        ),
-      );
       whenListen(
         fileCubit,
         Stream.fromIterable([
@@ -53,6 +46,11 @@ void main() {
             pendingDeletions: const {},
           ),
         ]),
+        initialState: FileState(
+          fileView: FileRepo.initialFiles,
+          isLoading: false,
+          pendingDeletions: const {},
+        ),
       );
 
       await tester.pumpApp(
@@ -67,7 +65,7 @@ void main() {
       expect(widgetToFling, findsOneWidget);
       await tester.fling(widgetToFling, const Offset(0, 500), 1000);
 
-      await tester.pump(FileRepo.loadFilesDuration);
+      await tester.pumpAndSettle(FileRepo.loadFilesDuration);
 
       verify(() => fileCubit.add(any(that: isA<LoadFiles>()))).called(1);
     });
