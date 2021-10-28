@@ -5,12 +5,16 @@ enum UsernameInputError { empty, invalid, taken }
 
 class UsernameInput extends FormzInput<String, UsernameInputError> {
   // Call super.pure to represent an unmodified form input.
+  // coverage:ignore-start
   const UsernameInput.pure({String value = '', this.serverError})
       : super.pure(value);
+  // coverage:ignore-end
 
   // Call super.dirty to represent a modified form input.
+  // coverage:ignore-start
   const UsernameInput.dirty({String value = '', this.serverError})
       : super.dirty(value);
+  // coverage:ignore-end
 
   final UsernameInputError? serverError;
 

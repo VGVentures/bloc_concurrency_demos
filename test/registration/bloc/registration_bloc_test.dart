@@ -29,50 +29,171 @@ void main() {
     });
   });
 
-  // for (var i = 0; i < 2; i++) {
-  const isOld = true; // i == 0;
-  const old = isOld ? 'Old' : 'New';
+  for (var i = 0; i < 2; i++) {
+    final isOld = i == 0;
+    final old = isOld ? 'Old' : 'New';
 
-  const validUsername = 'unicorn';
-  const invalidUsername = 'username';
+    const username = 'unicorn';
 
-  group('RegistrationBloc$old', () {
-    late RegistrationRepo repo;
-    final error = Exception();
+    group('RegistrationBloc$old', () {
+      late RegistrationRepo repo;
 
-    setUp(() {
-      repo = MockRegistrationRepo();
-    });
-    group('RegistrationUsernameChanged', () {
-      blocTest<RegistrationBloc, RegistrationState>(
-        'succeeds on available username',
-        setUp: () {
-          when(() => repo.isUsernameAvailable(validUsername))
-              .thenAnswer((_) async => true);
-        },
-        build: () => RegistrationBloc(isOld: isOld, registrationRepo: repo),
-        act: (bloc) => bloc.add(
-          const RegistrationUsernameChanged(username: validUsername),
-        ),
-        expect: () => <RegistrationState>[
-          const RegistrationState(
-            username: UsernameInput.dirty(value: validUsername),
-            isCheckingUsername: true,
-            status: RegistrationStatus.editing,
+      setUp(() {
+        repo = MockRegistrationRepo();
+      });
+      group('RegistrationUsernameChanged', () {
+        blocTest<RegistrationBloc, RegistrationState>(
+          'indicates available username',
+          setUp: () {
+            when(() => repo.isUsernameAvailable(username))
+                .thenAnswer((_) async => true);
+          },
+          build: () => RegistrationBloc(isOld: isOld, registrationRepo: repo),
+          wait: RegistrationBloc.debounceUsernameDuration,
+          act: (bloc) => bloc.add(
+            const RegistrationUsernameChanged(username: username),
           ),
-          const RegistrationState(
-            username: UsernameInput.dirty(value: validUsername),
+          expect: () => <RegistrationState>[
+            const RegistrationState(
+              username: UsernameInput.dirty(value: username),
+              isCheckingUsername: true,
+              status: RegistrationStatus.editing,
+            ),
+            const RegistrationState(
+              username: UsernameInput.dirty(value: username),
+              isCheckingUsername: false,
+              status: RegistrationStatus.editing,
+            ),
+          ],
+          verify: (bloc) {
+            verify(() => repo.isUsernameAvailable(username)).called(1);
+          },
+        );
+        blocTest<RegistrationBloc, RegistrationState>(
+          'indicates a taken username',
+          setUp: () {
+            when(() => repo.isUsernameAvailable(username))
+                .thenAnswer((_) async => false);
+          },
+          build: () => RegistrationBloc(isOld: isOld, registrationRepo: repo),
+          wait: RegistrationBloc.debounceUsernameDuration,
+          act: (bloc) => bloc.add(
+            const RegistrationUsernameChanged(username: username),
+          ),
+          expect: () => <RegistrationState>[
+            const RegistrationState(
+              username: UsernameInput.dirty(value: username),
+              isCheckingUsername: true,
+              status: RegistrationStatus.editing,
+            ),
+            const RegistrationState(
+              username: UsernameInput.dirty(
+                  value: username, serverError: UsernameInputError.taken),
+              isCheckingUsername: false,
+              status: RegistrationStatus.editing,
+            ),
+          ],
+          verify: (bloc) {
+            verify(() => repo.isUsernameAvailable(username)).called(1);
+          },
+        );
+      });
+
+      group('RegistrationSubmitted', () {
+        blocTest<RegistrationBloc, RegistrationState>(
+          'indicates successful registration',
+          setUp: () {
+            when(() => repo.register(username: username))
+                .thenAnswer((_) async {});
+          },
+          build: () => RegistrationBloc(isOld: isOld, registrationRepo: repo),
+          seed: () => const RegistrationState(
+            username: UsernameInput.dirty(value: username),
             isCheckingUsername: false,
             status: RegistrationStatus.editing,
           ),
-        ],
-        verify: (bloc) {
-          expect(bloc, isA<RegistrationBlocOld>());
-          verify(() => repo.isUsernameAvailable(validUsername)).called(1);
-        },
-      );
+          act: (bloc) => bloc.add(
+            const RegistrationSubmitted(),
+          ),
+          expect: () => [
+            const RegistrationState(
+              isCheckingUsername: false,
+              username: UsernameInput.dirty(value: username),
+              status: RegistrationStatus.submitting,
+            ),
+            const RegistrationState(
+              isCheckingUsername: false,
+              username: UsernameInput.dirty(value: username),
+              status: RegistrationStatus.succeeded,
+            ),
+          ],
+          verify: (bloc) {
+            verify(() => repo.register(username: username)).called(1);
+          },
+        );
+        blocTest<RegistrationBloc, RegistrationState>(
+          'indicates registration failure from taken username',
+          setUp: () {
+            when(() => repo.register(username: username))
+                .thenThrow(ArgumentError());
+          },
+          build: () => RegistrationBloc(isOld: isOld, registrationRepo: repo),
+          seed: () => const RegistrationState(
+            username: UsernameInput.dirty(value: username),
+            isCheckingUsername: false,
+            status: RegistrationStatus.editing,
+          ),
+          act: (bloc) => bloc.add(
+            const RegistrationSubmitted(),
+          ),
+          expect: () => [
+            const RegistrationState(
+              isCheckingUsername: false,
+              username: UsernameInput.dirty(value: username),
+              status: RegistrationStatus.submitting,
+            ),
+            const RegistrationState(
+              isCheckingUsername: false,
+              username: UsernameInput.dirty(value: username),
+              status: RegistrationStatus.failed,
+            ),
+          ],
+          verify: (bloc) {
+            verify(() => repo.register(username: username)).called(1);
+          },
+        );
+        blocTest<RegistrationBloc, RegistrationState>(
+          'indicates other registration failures',
+          setUp: () {
+            when(() => repo.register(username: username))
+                .thenThrow(Exception());
+          },
+          build: () => RegistrationBloc(isOld: isOld, registrationRepo: repo),
+          seed: () => const RegistrationState(
+            username: UsernameInput.dirty(value: username),
+            isCheckingUsername: false,
+            status: RegistrationStatus.editing,
+          ),
+          act: (bloc) => bloc.add(
+            const RegistrationSubmitted(),
+          ),
+          expect: () => [
+            const RegistrationState(
+              isCheckingUsername: false,
+              username: UsernameInput.dirty(value: username),
+              status: RegistrationStatus.submitting,
+            ),
+            const RegistrationState(
+              isCheckingUsername: false,
+              username: UsernameInput.dirty(value: username),
+              status: RegistrationStatus.failed,
+            ),
+          ],
+          verify: (bloc) {
+            verify(() => repo.register(username: username)).called(1);
+          },
+        );
+      });
     });
-  });
-
-  // }
+  }
 }
