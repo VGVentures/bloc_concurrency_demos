@@ -88,7 +88,9 @@ void main() {
             ),
             const RegistrationState(
               username: UsernameInput.dirty(
-                  value: username, serverError: UsernameInputError.taken),
+                value: username,
+                serverError: UsernameInputError.taken,
+              ),
               isCheckingUsername: false,
               status: RegistrationStatus.editing,
             ),
