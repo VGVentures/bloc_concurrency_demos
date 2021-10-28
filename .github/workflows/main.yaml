@@ -26,4 +26,4 @@ jobs:
       - name: Check Code Coverage
         uses: VeryGoodOpenSource/very_good_coverage@v1.2.0
         with:
-          min_coverage: 30
+          min_coverage: 100
