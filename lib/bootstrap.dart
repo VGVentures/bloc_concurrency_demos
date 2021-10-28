@@ -9,13 +9,9 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency_demos/settings/app_configuration.dart';
 import 'package:bloc_concurrency_demos/video/video_streaming_repo.dart';
 import 'package:flutter/widgets.dart';
-
-class AppPreloadedConfiguration {
-  const AppPreloadedConfiguration({required this.blankFrame});
-  final VideoData blankFrame;
-}
 
 class AppBlocObserver extends BlocObserver {
   @override
@@ -32,7 +28,7 @@ class AppBlocObserver extends BlocObserver {
 }
 
 Future<void> bootstrap(
-  FutureOr<Widget> Function(AppPreloadedConfiguration) builder,
+  FutureOr<Widget> Function(AppConfiguration) builder,
 ) async {
   Bloc.observer = AppBlocObserver();
   FlutterError.onError = (details) {
@@ -44,7 +40,7 @@ Future<void> bootstrap(
   await runZonedGuarded(
     () async => runApp(
       await builder(
-        AppPreloadedConfiguration(blankFrame: blankFrame),
+        AppConfiguration(blankFrame: blankFrame),
       ),
     ),
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),

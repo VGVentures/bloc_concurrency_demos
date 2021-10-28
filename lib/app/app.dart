@@ -5,16 +5,16 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'package:bloc_concurrency_demos/bootstrap.dart';
 import 'package:bloc_concurrency_demos/home/home_page.dart';
 import 'package:bloc_concurrency_demos/l10n/l10n.dart';
+import 'package:bloc_concurrency_demos/settings/app_configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class App extends StatelessWidget {
   const App({Key? key, required this.preloadedConfig}) : super(key: key);
 
-  final AppPreloadedConfiguration preloadedConfig;
+  final AppConfiguration preloadedConfig;
 
   @override
   Widget build(BuildContext context) {

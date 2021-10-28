@@ -1,6 +1,6 @@
-import 'package:bloc_concurrency_demos/bootstrap.dart';
 import 'package:bloc_concurrency_demos/home/home_page.dart';
 import 'package:bloc_concurrency_demos/l10n/l10n.dart';
+import 'package:bloc_concurrency_demos/settings/app_configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockingjay/mockingjay.dart';
@@ -17,7 +17,7 @@ Future<void> main() async {
 
       await tester.pumpApp(
         HomePage(
-          preloadedConfig: AppPreloadedConfiguration(blankFrame: frame),
+          preloadedConfig: AppConfiguration(blankFrame: frame),
         ),
         navigator: navigator,
       );
