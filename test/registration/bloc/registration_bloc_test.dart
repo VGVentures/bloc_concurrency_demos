@@ -12,6 +12,13 @@ import 'package:mocktail/mocktail.dart';
 import '../registration_mocks.dart';
 
 void main() {
+  group('RegistrationEvent', () {
+    test('equality', () {
+      const event = RegistrationSubmitted();
+      // ignore: prefer_const_constructors
+      expect(event == RegistrationSubmitted(), isTrue);
+    });
+  });
   group('RegistrationBloc', () {
     test('creates old bloc', () {
       final bloc = RegistrationBloc(
