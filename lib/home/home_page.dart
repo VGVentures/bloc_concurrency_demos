@@ -1,7 +1,7 @@
-import 'package:bloc_concurrency_demos/bootstrap.dart';
 import 'package:bloc_concurrency_demos/files/view/file_view.dart';
 import 'package:bloc_concurrency_demos/l10n/l10n.dart';
 import 'package:bloc_concurrency_demos/registration/view/registration_view.dart';
+import 'package:bloc_concurrency_demos/settings/app_configuration.dart';
 import 'package:bloc_concurrency_demos/video/video_streaming_repo.dart';
 import 'package:bloc_concurrency_demos/video/view/video_stream_view.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
         context.l10n.registrationViewTitleNew: const Registration(isOld: false),
       };
 
-  final AppPreloadedConfiguration preloadedConfig;
+  final AppConfiguration preloadedConfig;
 
   @override
   Widget build(BuildContext context) {

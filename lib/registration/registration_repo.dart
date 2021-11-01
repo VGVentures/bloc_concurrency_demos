@@ -1,8 +1,11 @@
 class RegistrationRepo {
   final Set<String> takenUsernames = {'username', 'admin', 'user', 'testuser'};
 
+  static const isUsernameAvailableDuration = Duration(milliseconds: 500);
+  static const registrationDuration = Duration(seconds: 2);
+
   Future<bool> isUsernameAvailable(String username) async {
-    await Future<void>.delayed(const Duration(milliseconds: 500));
+    await Future<void>.delayed(isUsernameAvailableDuration);
     try {
       _checkUsername(username);
       return true;
@@ -12,7 +15,7 @@ class RegistrationRepo {
   }
 
   Future<void> register({required String username}) async {
-    await Future<void>.delayed(const Duration(seconds: 2));
+    await Future<void>.delayed(registrationDuration);
     _checkUsername(username);
     takenUsernames.add(username);
   }

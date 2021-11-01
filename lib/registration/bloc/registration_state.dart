@@ -1,9 +1,10 @@
 import 'package:bloc_concurrency_demos/registration/models/username_input.dart';
+import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 
 enum RegistrationStatus { editing, submitting, failed, succeeded }
 
-class RegistrationState {
+class RegistrationState extends Equatable {
   const RegistrationState({
     required this.username,
     required this.isCheckingUsername,
@@ -29,5 +30,6 @@ class RegistrationState {
     return Formz.validate([username]) == FormzStatus.valid && !isBusy;
   }
 
-  bool get showUsernameAvailable => username.valid && !isCheckingUsername;
+  @override
+  List<Object> get props => [username, isCheckingUsername, status];
 }

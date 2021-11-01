@@ -6,8 +6,8 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:bloc_concurrency_demos/app/app.dart';
-import 'package:bloc_concurrency_demos/bootstrap.dart';
 import 'package:bloc_concurrency_demos/home/home_page.dart';
+import 'package:bloc_concurrency_demos/settings/app_configuration.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/helpers.dart';
@@ -18,7 +18,7 @@ void main() {
       final frame = await getVideoFrameForWidgetTest(tester);
       await tester.pumpApp(
         App(
-          preloadedConfig: AppPreloadedConfiguration(
+          preloadedConfig: AppConfiguration(
             blankFrame: frame,
           ),
         ),
