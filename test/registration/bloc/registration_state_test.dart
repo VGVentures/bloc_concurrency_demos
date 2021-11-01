@@ -1,17 +1,31 @@
+// ignore_for_file: prefer_const_constructors
 import 'package:bloc_concurrency_demos/registration/bloc/registration_state.dart';
 import 'package:bloc_concurrency_demos/registration/models/username_input.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('RegistrationState', () {
+    test('initial has correct properties', () {
+      expect(
+        RegistrationState.initial(),
+        equals(
+          RegistrationState(
+            username: const UsernameInput.pure(),
+            isCheckingUsername: false,
+            status: RegistrationStatus.editing,
+          ),
+        ),
+      );
+    });
+
     test('equality', () {
-      const username = UsernameInput.dirty(value: 'unicorn');
-      const stateA = RegistrationState(
+      final username = UsernameInput.dirty(value: 'unicorn');
+      final stateA = RegistrationState(
         username: username,
         isCheckingUsername: true,
         status: RegistrationStatus.editing,
       );
-      const stateB = RegistrationState(
+      final stateB = RegistrationState(
         username: username,
         isCheckingUsername: false,
         status: RegistrationStatus.editing,
@@ -19,7 +33,7 @@ void main() {
       expect(stateA == stateB, false);
       expect(
         stateA ==
-            const RegistrationState(
+            RegistrationState(
               username: username,
               isCheckingUsername: true,
               status: RegistrationStatus.editing,
@@ -29,7 +43,7 @@ void main() {
     });
     group('isBusy', () {
       test('returns true when checking username', () {
-        const state = RegistrationState(
+        final state = RegistrationState(
           username: UsernameInput.pure(value: 'unicorn'),
           isCheckingUsername: true,
           status: RegistrationStatus.editing,
@@ -37,7 +51,7 @@ void main() {
         expect(state.isBusy, true);
       });
       test('returns true when submitting form', () {
-        const state = RegistrationState(
+        final state = RegistrationState(
           username: UsernameInput.pure(value: 'unicorn'),
           isCheckingUsername: false,
           status: RegistrationStatus.submitting,
@@ -48,7 +62,7 @@ void main() {
 
     group('canSubmit', () {
       test('true when username is valid and not busy', () {
-        const state = RegistrationState(
+        final state = RegistrationState(
           username: UsernameInput.dirty(value: 'unicorn'),
           isCheckingUsername: false,
           status: RegistrationStatus.editing,
@@ -56,7 +70,7 @@ void main() {
         expect(state.canSubmit, true);
       });
       test('false when username is invalid', () {
-        const state = RegistrationState(
+        final state = RegistrationState(
           username: UsernameInput.dirty(value: 'un'),
           isCheckingUsername: false,
           status: RegistrationStatus.editing,
@@ -64,7 +78,7 @@ void main() {
         expect(state.canSubmit, false);
       });
       test('false when username is valid but is busy', () {
-        const state = RegistrationState(
+        final state = RegistrationState(
           username: UsernameInput.dirty(value: 'unicorn'),
           isCheckingUsername: false,
           status: RegistrationStatus.submitting,
