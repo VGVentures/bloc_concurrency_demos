@@ -11,17 +11,12 @@ class RegistrationState extends Equatable {
     required this.status,
   });
 
-  // A bug in dart prevents const constructors from receiving
-  // proper coverage.
-
-  // coverage:ignore-start
   const RegistrationState.initial()
       : this(
           username: const UsernameInput.pure(),
           isCheckingUsername: false,
           status: RegistrationStatus.editing,
         );
-  // coverage:ignore-end
 
   final UsernameInput username;
   final bool isCheckingUsername;
@@ -36,5 +31,5 @@ class RegistrationState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [username, isCheckingUsername, status];
+  List<Object> get props => [username, isCheckingUsername, status];
 }

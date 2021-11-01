@@ -9,12 +9,12 @@ class RegistrationUsernameChanged extends RegistrationEvent {
   final String username;
 
   @override
-  List<Object?> get props => [username];
+  List<Object> get props => [username];
 }
 
 class RegistrationSubmitted extends RegistrationEvent {
   const RegistrationSubmitted();
 
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
